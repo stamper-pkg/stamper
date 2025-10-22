@@ -22,14 +22,6 @@ end
 local commandName = args[1]
 local command = commands[commandName]
 
-for _, arg in pairs(args) do
-	if arg == "--version" or arg == "-v" then
-		commands.misc.execute({ arg })
-		
-		return
-	end
-end
-
 if not command then
 	commandName = "misc"
 	command = commands[commandName]

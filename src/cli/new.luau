@@ -3,11 +3,11 @@
 
 local fs = require("@lune/fs")
 
-local prompt = require("@utils/prompt")
-local toml = require("@utils/toml")
+local prompt = require("../utils/prompt")
+local toml = require("../utils/toml")
 
-local commandConstructor = require("@constructors/cli/command")
-local flagConstructor = require("@constructors/cli/flag")
+local commandConstructor = require("../constructors/cli/command")
+local flagConstructor = require("../constructors/cli/flag")
 
 local _flags = {
 	help = flagConstructor("help", { "--help", "-h" }, "bring up the help menu for the command"),
@@ -48,7 +48,7 @@ local command = commandConstructor({
 
 		local verbose = flags.verbose or false
 
-		local owner = prompt("text", "who is the owner of your stamper project?", function(text)
+		local owner = prompt("text", "who is the owner of your stamper project?", function(text: string)
 			if not text then
 				return false, "invalid package owner"
 			end
@@ -64,7 +64,7 @@ local command = commandConstructor({
 			return true, nil
 		end)
 
-		local name = prompt("text", "what is the name of your stamper project?", function(text)
+		local name = prompt("text", "what is the name of your stamper project?", function(text: string)
 			if not text then
 				return false, "invalid package name"
 			end
@@ -80,7 +80,7 @@ local command = commandConstructor({
 			return true, nil
 		end)
 
-		local description = prompt("text", "what is the description of your stamper project?", function(text)
+		local description = prompt("text", "what is the description of your stamper project?", function(text: string)
 			if not text or text == "" then
 				return true, nil
 			end
@@ -113,11 +113,39 @@ local command = commandConstructor({
 				print("confirmed creation of new stamper project")
 			end
 
-			fs.writeFile("./stamper.toml", newProject)
+			if fs.isFile("./stamper.toml") then
+				local delete = prompt("confirm", "stamper.toml file already exists! would you like to delete it?")
+
+				if delete then
+					if verbose then
+						print("deleting old stamper.toml")
+					end
+
+					fs.removeFile("./stamper.toml")
+
+					if verbose then
+						print("confirmed deletion of old stamper.toml")
+					end
+				else
+					if verbose then
+						print("user cancelled operation")
+					end
+
+					return
+				end
+			end
 		else
 			if verbose then
 				print("cancelled operation")
 			end
+
+			return
+		end
+
+		fs.writeFile("./stamper.toml", newProject)
+
+		if verbose then
+			print("wrote new stamper.toml")
 		end
 	end,
 })

@@ -3,7 +3,7 @@
 
 local stdio = require("@lune/stdio")
 
-return function(kind: string, message: string, guard: ((string) -> (boolean, string))?)
+return function(kind: string, message: string, guard: ((string) -> (boolean, string?))?)
 	local accepted, acceptedText = false, ""
 
 	repeat

@@ -2,10 +2,10 @@
 -- written by primiti-ve on github
 
 local fs = require("@lune/fs")
-local currentVersion = require("@src/version")
+local currentVersion = require("../version")
 
-local commandConstructor = require("@constructors/cli/command")
-local flagConstructor = require("@constructors/cli/flag")
+local commandConstructor = require("../constructors/cli/command")
+local flagConstructor = require("../constructors/cli/flag")
 
 local _flags = {
 	help = flagConstructor("help", { "--help", "-h" }, "bring up the stamper help menu"),
