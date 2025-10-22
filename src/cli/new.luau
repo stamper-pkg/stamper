@@ -8,7 +8,7 @@ local promptConstructor = require("../constructors/prompt")
 local commandConstructor = require("../constructors/cli/command")
 local flagConstructor = require("../constructors/cli/flag")
 
-local tableUtils = require("../utils/table")
+local helpUtils = require("../utils./help")
 
 local _flags = {
 	help = flagConstructor("help", { "--help", "-h" }, "bring up the help menu for the command"),
@@ -26,28 +26,7 @@ local command = commandConstructor({
 
 	execute = function(args, flags)
 		if flags.help then
-			local text = "stamper new"
-
-			text = text .. " [flags]"
-			text = text .. "\n"
-			text = text .. "  flags:"
-
-			for _, flag in pairs(_flags) do
-				local options = {}
-
-				for option, description in pairs(flag.options) do
-					table.insert(options, option)
-				end
-
-				tableUtils.sortFlags(options)
-
-				text = text .. "\n"
-				text = text .. "    " .. table.concat(options, ", ") .. ": " .. flag.description
-			end
-
-			text = text .. "\n"
-
-			print(text)
+			helpUtils.displaySpecific("stamper new", _flags)
 
 			return
 		end
