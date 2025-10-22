@@ -7,12 +7,16 @@ local currentVersion = require("../version")
 local commandConstructor = require("../constructors/cli/command")
 local flagConstructor = require("../constructors/cli/flag")
 
+local tableUtils = require("../utils/table")
+
 local _flags = {
 	help = flagConstructor("help", { "--help", "-h" }, "bring up the stamper help menu"),
 	version = flagConstructor("version", { "--version", "-v" }, "check the current stamper version"),
 }
 
 local command = commandConstructor({
+	displayPriority = 1,
+
 	command = "misc",
 	description = "blank stamper command, used for help and version",
 
@@ -20,7 +24,8 @@ local command = commandConstructor({
 
 	execute = function(args, flags)
 		if flags.help then
-			print(`stamper {currentVersion.major}.{currentVersion.minor}.{currentVersion.patch} help menu`)
+			print(`stamper {currentVersion.major}.{currentVersion.minor}.{currentVersion.patch}`)
+			print("help menu")
 
 			print("")
 
@@ -31,7 +36,7 @@ local command = commandConstructor({
 
 			print("commands:")
 
-			local commands = {}
+			local commands = {} :: { [string]: commandConstructor.cliData }
 
 			for _, name in pairs(fs.readDir("./src/cli")) do
 				local prefix = ".luau"
@@ -39,13 +44,24 @@ local command = commandConstructor({
 
 				if sub == prefix then
 					name = string.gsub(name, ".luau", "")
-					commands[name] = require(`./{name}`)
+
+					local otherCommand = require(`./{name}`)
+
+					commands[otherCommand.displayPriority] = otherCommand
 				end
 			end
 
-			for _, otherCommand in pairs(commands) do
+			for i = 1, tableUtils.getTableLength(commands) do
+				local otherCommand = commands[i]
+
 				if otherCommand.command ~= "t" then
-					local text = "  stamper " .. otherCommand.command
+					local text
+
+					if otherCommand.displayCommand then
+						text = "  stamper " .. otherCommand.displayCommand
+					else
+						text = "  stamper"
+					end
 
 					if otherCommand.flags then
 						text = text .. " [flags]"
@@ -58,6 +74,8 @@ local command = commandConstructor({
 							for option, description in pairs(flag.options) do
 								table.insert(options, option)
 							end
+
+							tableUtils.sortFlags(options)
 
 							text = text .. "\n"
 							text = text .. "      " .. table.concat(options, ", ") .. ": " .. flag.description

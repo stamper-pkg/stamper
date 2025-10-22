@@ -4,7 +4,9 @@
 local flagConstructor = require("./flag")
 
 export type cliData = {
+	displayCommand: string,
 	command: string,
+	
 	description: string,
 
 	flags: { [string]: flagConstructor.flag },
@@ -13,12 +15,7 @@ export type cliData = {
 }
 
 return function(data: cliData)
-	local command = {}
-
-	command.command = data.command
-	command.description = data.description
-
-	command.flags = data.flags
+	local command = table.clone(data)
 
 	function command.execute(args)
 		local flags = {}

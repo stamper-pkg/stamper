@@ -8,12 +8,17 @@ local promptConstructor = require("../constructors/prompt")
 local commandConstructor = require("../constructors/cli/command")
 local flagConstructor = require("../constructors/cli/flag")
 
+local tableUtils = require("../utils/table")
+
 local _flags = {
 	help = flagConstructor("help", { "--help", "-h" }, "bring up the help menu for the command"),
 	verbose = flagConstructor("verbose", { "--verbose", "-v" }, "enable verbose output"),
 }
 
 local command = commandConstructor({
+	displayCommand = "new",
+	displayPriority = 2,
+
 	command = "new",
 	description = "creates a new stamper project",
 
@@ -33,6 +38,8 @@ local command = commandConstructor({
 				for option, description in pairs(flag.options) do
 					table.insert(options, option)
 				end
+
+				tableUtils.sortFlags(options)
 
 				text = text .. "\n"
 				text = text .. "    " .. table.concat(options, ", ") .. ": " .. flag.description
