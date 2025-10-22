@@ -10,9 +10,11 @@ local commands = {}
 args = table.clone(args)
 
 for _, name in pairs(fs.readDir("./src/cli")) do
-	name = string.gsub(name, ".luau", "")
+	local prefix = ".luau"
+	local sub = string.sub(name, string.len(name) - #prefix + 1, string.len(name))
 
-	if name ~= "constructor" then
+	if sub == prefix then
+		name = string.gsub(name, ".luau", "")
 		commands[name] = require(`./cli/{name}`)
 	end
 end
@@ -20,16 +22,25 @@ end
 local commandName = args[1]
 local command = commands[commandName]
 
-if command then
-	table.remove(args, 1)
+for _, arg in pairs(args) do
+	if arg == "--version" or arg == "-v" then
+		commands.misc.execute({ arg })
+		
+		return
+	end
+end
 
+if not command then
+	commandName = "misc"
+	command = commands[commandName]
+else
+	table.remove(args, 1)
+end
+
+if command then
 	command.execute(args)
 else
-	if commandName then 
-		print("unknown command '" .. tostring(commandName) .. "'!")
-	else
-		print("no command supplied!")
-	end
+	print("no command supplied!")
 end
 
 return nil

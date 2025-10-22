@@ -5,6 +5,8 @@ local flagConstructor = require("@constructors/cli/flag")
 
 export type cliData = {
 	command: string,
+	description: string,
+	
 	flags: { [string]: flagConstructor.flag },
 
 	execute: (any) -> any,
@@ -14,6 +16,8 @@ return function(data: cliData)
 	local command = {}
 
 	command.command = data.command
+	command.description = data.description
+
 	command.flags = data.flags
 
 	function command.execute(args)

@@ -9,14 +9,43 @@ local toml = require("@utils/toml")
 local commandConstructor = require("@constructors/cli/command")
 local flagConstructor = require("@constructors/cli/flag")
 
-local new = commandConstructor({
-	command = "new",
+local _flags = {
+	help = flagConstructor("help", { "--help", "-h" }, "bring up the help menu for the command"),
+	verbose = flagConstructor("verbose", { "--verbose", "-v" }, "enable verbose output"),
+}
 
-	flags = {
-		verbose = flagConstructor("verbose", { "--verbose", "-v" }, "Enable verbose output"),
-	},
+local command = commandConstructor({
+	command = "new",
+	description = "creates a new stamper project",
+
+	flags = _flags,
 
 	execute = function(args, flags)
+		if flags.help then
+			local text = "stamper new"
+
+			text = text .. " [flags]"
+			text = text .. "\n"
+			text = text .. "  flags:"
+
+			for _, flag in pairs(_flags) do
+				local options = {}
+
+				for option, description in pairs(flag.options) do
+					table.insert(options, option)
+				end
+
+				text = text .. "\n"
+				text = text .. "    " .. table.concat(options, ", ") .. ": " .. flag.description
+			end
+
+			text = text .. "\n"
+
+			print(text)
+
+			return
+		end
+
 		local verbose = flags.verbose or false
 
 		local owner = prompt("text", "who is the owner of your stamper project?", function(text)
@@ -93,4 +122,4 @@ local new = commandConstructor({
 	end,
 })
 
-return new
+return command

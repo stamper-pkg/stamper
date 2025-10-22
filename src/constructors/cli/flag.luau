@@ -10,6 +10,7 @@ return function(internalName: string, names: string | { string }?, description: 
 	local flag = {}
 
 	flag._name = internalName
+	flag.description = description
 	flag.options = {}
 
 	if type(names) == "string" then
