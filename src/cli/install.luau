@@ -1,4 +1,4 @@
--- cli command for creating a new stamper project
+-- cli command for installing the dependencies of a stamper project
 -- written by primiti-ve on github
 
 local fs = require(`@lune/fs`)
@@ -19,7 +19,7 @@ local command = commandConstructor({
 	displayPriority = 2,
 
 	command = `install`,
-	description = `installs all dependencies of a stamper project`,
+	description = `installs the dependencies of a stamper project`,
 
 	flags = _flags,
 
