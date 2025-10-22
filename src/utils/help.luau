@@ -1,33 +1,33 @@
 -- help utils
 -- written by primiti-ve on github
 
-local fs = require("@lune/fs")
-local currentVersion = require("../version")
+local fs = require(`@lune/fs`)
+local currentVersion = require(`../version`)
 
-local commandConstructor = require("../constructors/cli/command")
-local tableUtils = require("./table")
+local commandConstructor = require(`../constructors/cli/command`)
+local tableUtils = require(`./table`)
 
 function displayGeneral()
 	print(`stamper {currentVersion.major}.{currentVersion.minor}.{currentVersion.patch}`)
-	print("help menu")
+	print(`help menu`)
 
-	print("")
+	print(``)
 
-	print("usage:")
-	print("  stamper [command] [flags]")
+	print(`usage:`)
+	print(`  stamper [command] [flags]`)
 
-	print("")
+	print(``)
 
-	print("commands:")
+	print(`commands:`)
 
 	local commands = {} :: { [string]: commandConstructor.cliData }
 
-	for _, name in pairs(fs.readDir("./src/cli")) do
-		local prefix = ".luau"
+	for _, name in pairs(fs.readDir(`./src/cli`)) do
+		local prefix = `.luau`
 		local sub = string.sub(name, string.len(name) - #prefix + 1, string.len(name))
 
 		if sub == prefix then
-			name = string.gsub(name, ".luau", "")
+			name = string.gsub(name, `.luau`, ``)
 
 			local otherCommand = require(`../cli/{name}`)
 
@@ -38,19 +38,19 @@ function displayGeneral()
 	for i = 1, tableUtils.getTableLength(commands) do
 		local otherCommand = commands[i]
 
-		if otherCommand.command ~= "t" then
+		if otherCommand.command ~= `t` then
 			local text
 
 			if otherCommand.displayCommand then
-				text = "  stamper " .. otherCommand.displayCommand
+				text = `  stamper ` .. otherCommand.displayCommand
 			else
-				text = "  stamper"
+				text = `  stamper`
 			end
 
 			if otherCommand.flags then
-				text = text .. " [flags]"
-				text = text .. "\n"
-				text = text .. "    flags:"
+				text = `{text} [flags]`
+				text = `{text}\n`
+				text = `{text}    flags:`
 
 				for _, flag in pairs(otherCommand.flags) do
 					local options = {}
@@ -61,22 +61,23 @@ function displayGeneral()
 
 					tableUtils.sortFlags(options)
 
-					text = text .. "\n"
-					text = text .. "      " .. table.concat(options, ", ") .. ": " .. flag.description
+					text = `{text}\n`
+					text = `{text}      ` .. table.concat(options, `, `) .. `: ` .. flag.description
 				end
 			end
 
-			text = text .. "\n"
+			text = `{text}\n`
 
 			print(text)
 		end
 	end
 end
 
-function displaySpecific(text: string, flags)
-	text = text .. " [flags]"
-	text = text .. "\n"
-	text = text .. "  flags:"
+function displaySpecific(command: string, flags)
+    local text = `stamper {command}`
+	text = `{text} [flags]`
+	text = `{text}\n`
+	text = `{text}  flags:`
 
 	for _, flag in pairs(flags) do
 		local options = {}
@@ -87,11 +88,11 @@ function displaySpecific(text: string, flags)
 
 		tableUtils.sortFlags(options)
 
-		text = text .. "\n"
-		text = text .. "    " .. table.concat(options, ", ") .. ": " .. flag.description
+		text = `{text}\n`
+		text = `{text}    ` .. table.concat(options, `, `) .. `: ` .. flag.description
 	end
 
-	text = text .. "\n"
+	text = `{text}\n`
 
 	print(text)
 end

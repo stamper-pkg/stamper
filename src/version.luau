@@ -2,7 +2,7 @@
 -- written by primiti-ve on github
 
 return {
-	major = "0",
-	minor = "1",
-	patch = "0",
+	major = `0`,
+	minor = `1`,
+	patch = `0`,
 }

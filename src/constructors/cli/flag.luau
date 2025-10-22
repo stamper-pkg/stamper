@@ -13,7 +13,7 @@ return function(internalName: string, names: string | { string }?, description: 
 	flag.description = description
 	flag.options = {}
 
-	if type(names) == "string" then
+	if type(names) == `string` then
 		names = { names }
 	end
 

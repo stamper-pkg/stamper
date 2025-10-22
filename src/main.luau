@@ -1,22 +1,22 @@
 -- stamper's entry point
 -- written by primiti-ve on github
 
-local process = require("@lune/process")
-local fs = require("@lune/fs")
+local process = require(`@lune/process`)
+local fs = require(`@lune/fs`)
 
-local levenshtein = require("./utils/levenshtein")
+local levenshtein = require(`./utils/levenshtein`)
 
 local args = process.args
 local commands = {}
 
 args = table.clone(args)
 
-for _, name in pairs(fs.readDir("./src/cli")) do
-	local prefix = ".luau"
+for _, name in pairs(fs.readDir(`./src/cli`)) do
+	local prefix = `.luau`
 	local sub = string.sub(name, string.len(name) - #prefix + 1, string.len(name))
 
 	if sub == prefix then
-		name = string.gsub(name, ".luau", "")
+		name = string.gsub(name, `.luau`, ``)
 		commands[name] = require(`./cli/{name}`)
 	end
 end
@@ -26,8 +26,8 @@ local command = commands[commandName]
 
 if not command then
 	if commandName then
-		if string.sub(commandName, 1, 1) == "-" then
-			commandName = "misc"
+		if string.sub(commandName, 1, 1) == `-` then
+			commandName = `misc`
 			command = commands[commandName]
 		else
 			local commandNames = {}
@@ -60,5 +60,5 @@ end
 if command then
 	command.execute(args)
 else
-	print("[stamper] no command supplied!")
+	print(`[stamper] no command supplied!`)
 end

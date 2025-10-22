@@ -6,14 +6,14 @@ function sortFlags(flags: { string })
 		local aCount = 0
 		local bCount = 0
 
-		for _, char in pairs(string.split(a, "")) do 
-			if char == "-" then 
+		for _, char in pairs(string.split(a, ``)) do 
+			if char == `-` then 
 				aCount += 1
 			end
 		end
 
-		for _, char in pairs(string.split(b, "")) do 
-			if char == "-" then 
+		for _, char in pairs(string.split(b, ``)) do 
+			if char == `-` then 
 				bCount += 1
 			end
 		end

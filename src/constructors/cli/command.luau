@@ -1,7 +1,7 @@
 -- cli command constructor
 -- written by primiti-ve on github
 
-local flagConstructor = require("./flag")
+local flagConstructor = require(`./flag`)
 
 export type cliData = {
 	displayCommand: string,
@@ -25,7 +25,7 @@ return function(data: cliData)
 			local arg = args[i]
 
 			for flagName, flag in pairs(command.flags) do
-				if string.sub(arg, 1, 1) == "-" then
+				if string.sub(arg, 1, 1) == `-` then
 					table.remove(args, i)
 				end
 
