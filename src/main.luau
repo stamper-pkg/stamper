@@ -44,7 +44,7 @@ if not command then
 
 		local correctedCommand = commandNames[1]
 
-		if correctedCommand.distance <= 2 then 
+		if correctedCommand.distance <= 2 then
 			print(`[stamper] no command named {commandName} found!`)
 			print(`          did you mean {correctedCommand.name}?`)
 
@@ -60,5 +60,3 @@ if command then
 else
 	print("[stamper] no command supplied!")
 end
-
-return nil

@@ -2,10 +2,9 @@
 -- written by primiti-ve on github
 
 local fs = require("@lune/fs")
-
-local prompt = require("../utils/prompt")
 local toml = require("../utils/toml")
 
+local promptConstructor = require("../constructors/prompt")
 local commandConstructor = require("../constructors/cli/command")
 local flagConstructor = require("../constructors/cli/flag")
 
@@ -48,7 +47,7 @@ local command = commandConstructor({
 
 		local verbose = flags.verbose or false
 
-		local owner = prompt("text", "who is the owner of your stamper project?", function(text: string)
+		local owner = promptConstructor("text", "who is the owner of your stamper project?", function(text: string)
 			if not text then
 				return false, "invalid package owner"
 			end
@@ -64,7 +63,7 @@ local command = commandConstructor({
 			return true, nil
 		end)
 
-		local name = prompt("text", "what is the name of your stamper project?", function(text: string)
+		local name = promptConstructor("text", "what is the name of your stamper project?", function(text: string)
 			if not text then
 				return false, "invalid package name"
 			end
@@ -80,7 +79,7 @@ local command = commandConstructor({
 			return true, nil
 		end)
 
-		local description = prompt("text", "what is the description of your stamper project?", function(text: string)
+		local description = promptConstructor("text", "what is the description of your stamper project?", function(text: string)
 			if not text or text == "" then
 				return true, nil
 			end
@@ -106,7 +105,7 @@ local command = commandConstructor({
 
 		print(newProject)
 
-		local confirmed = prompt("confirm", "do these look good?")
+		local confirmed = promptConstructor("confirm", "do these look good?")
 
 		if confirmed then
 			if verbose then
@@ -114,7 +113,7 @@ local command = commandConstructor({
 			end
 
 			if fs.isFile("./stamper.toml") then
-				local delete = prompt("confirm", "stamper.toml file already exists! would you like to delete it?")
+				local delete = promptConstructor("confirm", "stamper.toml file already exists! would you like to delete it?")
 
 				if delete then
 					if verbose then
