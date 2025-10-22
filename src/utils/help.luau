@@ -1,3 +1,6 @@
+-- help utils
+-- written by primiti-ve on github
+
 local fs = require("@lune/fs")
 local currentVersion = require("../version")
 

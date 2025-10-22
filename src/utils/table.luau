@@ -1,3 +1,6 @@
+-- table utils
+-- written by primiti-ve on github
+
 function sortFlags(flags: { string })
 	table.sort(flags, function(a, b)
 		local aCount = 0
