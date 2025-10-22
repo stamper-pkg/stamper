@@ -25,30 +25,32 @@ local commandName = args[1]
 local command = commands[commandName]
 
 if not command then
-	if string.sub(commandName, 1, 1) == "-" then
-		commandName = "misc"
-		command = commands[commandName]
-	else
-		local commandNames = {}
+	if commandName then
+		if string.sub(commandName, 1, 1) == "-" then
+			commandName = "misc"
+			command = commands[commandName]
+		else
+			local commandNames = {}
 
-		for _, otherCommand in pairs(commands) do
-			table.insert(commandNames, {
-				name = otherCommand.command,
-				distance = levenshtein(otherCommand.command, commandName),
-			})
-		end
+			for _, otherCommand in pairs(commands) do
+				table.insert(commandNames, {
+					name = otherCommand.command,
+					distance = levenshtein(otherCommand.command, commandName),
+				})
+			end
 
-		table.sort(commandNames, function(a, b)
-			return a.distance < b.distance
-		end)
+			table.sort(commandNames, function(a, b)
+				return a.distance < b.distance
+			end)
 
-		local correctedCommand = commandNames[1]
+			local correctedCommand = commandNames[1]
 
-		if correctedCommand.distance <= 2 then
-			print(`[stamper] no command named {commandName} found!`)
-			print(`          did you mean {correctedCommand.name}?`)
+			if correctedCommand.distance <= 2 then
+				print(`[stamper] no command named {commandName} found!`)
+				print(`          did you mean {correctedCommand.name}?`)
 
-			return
+				return
+			end
 		end
 	end
 else

@@ -39,7 +39,7 @@ local command = commandConstructor({
 
 				if sub == prefix then
 					name = string.gsub(name, ".luau", "")
-					commands[name] = require(`@src/cli/{name}`)
+					commands[name] = require(`./{name}`)
 				end
 			end
 
