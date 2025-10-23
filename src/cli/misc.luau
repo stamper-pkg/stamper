@@ -1,12 +1,12 @@
 -- cli command for checking the current stamper version
 -- written by primiti-ve on github
 
-local currentVersion = require(`../version`)
+local configuration = require(`../configuration`)
 
 local commandConstructor = require(`../constructors/cli/command`)
 local flagConstructor = require(`../constructors/cli/flag`)
 
-local helpUtils = require(`../utils/help`)
+local helpUtils = require(`../utils/stamper/help`)
 
 local _flags = {
 	help = flagConstructor(`help`, { `--help`, `-h` }, `bring up the stamper help menu`),
@@ -17,7 +17,7 @@ local command = commandConstructor({
 	displayPriority = 1,
 
 	command = `misc`,
-	description = `blank stamper command, used for help and version`,
+	description = `global help menu + stamper version`,
 
 	flags = _flags,
 
@@ -25,6 +25,8 @@ local command = commandConstructor({
 		if flags.help then
 			helpUtils.displayGeneral()
 		elseif flags.version then
+			local currentVersion = configuration.currentVersion
+			
 			print(`stamper {currentVersion.major}.{currentVersion.minor}.{currentVersion.patch}`)
 		end
 	end,

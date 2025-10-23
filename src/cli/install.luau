@@ -7,16 +7,19 @@ local toml = require(`../utils/toml`)
 local commandConstructor = require(`../constructors/cli/command`)
 local flagConstructor = require(`../constructors/cli/flag`)
 
-local helpUtils = require(`../utils/help`)
+local helpUtils = require(`../utils/stamper/help`)
+local installingUtils = require(`../utils/stamper/installing`)
+local networkingUtils = require(`../utils/stamper/networking`)
 
 local _flags = {
 	help = flagConstructor(`help`, { `--help`, `-h` }, `bring up the help menu for the command`),
 	verbose = flagConstructor(`verbose`, { `--verbose`, `-v` }, `enable verbose output`),
+	clear = flagConstructor(`clear`, { `--clear`, `-c` }, "clear stamper_packages before installing"),
 }
 
 local command = commandConstructor({
 	displayCommand = `install`,
-	displayPriority = 2,
+	displayPriority = 3,
 
 	command = `install`,
 	description = `installs the dependencies of a stamper project`,
@@ -37,18 +40,67 @@ local command = commandConstructor({
 			return
 		end
 
-		if flags.verbose then 
-            print(`[stamper verbose] creating`)
+		if flags.verbose then
+			print(`[stamper verbose] installing packages`)
 		end
 
-        local file = fs.readFile("./stamper.toml")
-        local data = toml.read(file)
+		if flags.clear then
+			if flags.verbose then
+				print(`[stamper verbose] attempting to clear stamper_packages`)
+			end
 
-        local dependencies = data.package.dependencies or {}
+			if fs.isDir("./stamper_packages") then
+				if flags.verbose then
+					print(`[stamper verbose] removing stamper_packages`)
+				end
 
-        for alias, dependency in pairs(dependencies) do
-            print(alias, dependency)
-        end
+				fs.removeDir("./stamper_packages")
+			else
+				if flags.verbose then
+					print(`[stamper verbose] stamper_packages does not exist`)
+				end
+			end
+		end
+
+		local file = fs.readFile("./stamper.toml")
+		local data = toml.read(file)
+
+		local dependencies = data.package.dependencies or {}
+
+		-- TODO: add more targets
+		for alias, dependency in pairs(dependencies) do
+			local dependencyData: installingUtils.installData
+
+			if dependency.owner and dependency.name then
+				local dependencyResult = {
+					header = {
+						name = dependency.name,
+						owner = dependency.owner,
+						description = "",
+					},
+
+					package = {
+						version = dependency.version,
+					},
+
+					flags = flags,
+				}
+
+				dependencyResult = networkingUtils.get(dependencyResult)
+				dependencyData = {
+					content = dependencyResult,
+					alias = alias,
+
+					target = `stamper`,
+
+					flags = flags,
+				} :: installingUtils.installData
+			end
+
+			if dependencyData then
+				installingUtils.install(dependencyData)
+			end
+		end
 	end,
 })
 

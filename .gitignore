@@ -1,5 +1,8 @@
+# dev stuff
 .luaurc
 selene.toml
 
+# stamper-related
 stamper.luau
 stamper.toml
+stamper_packages

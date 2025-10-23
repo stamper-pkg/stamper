@@ -3,11 +3,11 @@
 
 local stdio = require(`@lune/stdio`)
 
-return function(kind: string, message: string, guard: ((string) -> (boolean, string?))?)
+return function(kind: string, message: string, guard: ((string) -> (boolean, string?))?, ...: any)
 	local accepted, acceptedText = false, ``
 
 	repeat
-		local text = stdio.prompt(kind, message)
+		local text = stdio.prompt(kind, message, ...)
 
 		if not guard then
 			return text

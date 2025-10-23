@@ -2,12 +2,14 @@
 -- written by primiti-ve on github
 
 local fs = require(`@lune/fs`)
-local currentVersion = require(`../version`)
+local configuration = require(`../../configuration`)
 
-local commandConstructor = require(`../constructors/cli/command`)
-local tableUtils = require(`./table`)
+local commandConstructor = require(`../../constructors/cli/command`)
+local tableUtils = require(`../table`)
 
 function displayGeneral()
+	local currentVersion = configuration.currentVersion
+
 	print(`stamper {currentVersion.major}.{currentVersion.minor}.{currentVersion.patch}`)
 	print(`help menu`)
 
@@ -31,50 +33,62 @@ function displayGeneral()
 
 			local otherCommand = require(`../cli/{name}`)
 
-			commands[otherCommand.displayPriority] = otherCommand
+			table.insert(commands, otherCommand.displayPriority, otherCommand)
 		end
 	end
 
 	for i = 1, tableUtils.getTableLength(commands) do
 		local otherCommand = commands[i]
+		local text
 
-		if otherCommand.command ~= `t` then
-			local text
+		if otherCommand.displayCommand then
+			text = `  stamper ` .. otherCommand.displayCommand
+		else
+			text = `  stamper`
+		end
 
-			if otherCommand.displayCommand then
-				text = `  stamper ` .. otherCommand.displayCommand
-			else
-				text = `  stamper`
-			end
+		if otherCommand.flags then
+			text = `{text} [flags]`
+		end
 
-			if otherCommand.flags then
-				text = `{text} [flags]`
-				text = `{text}\n`
-				text = `{text}    flags:`
+		text = `{text}\n`
+		text = `{text}    {otherCommand.description}`
+		text = `{text}\n`
 
-				for _, flag in pairs(otherCommand.flags) do
-					local options = {}
-
-					for option, description in pairs(flag.options) do
-						table.insert(options, option)
-					end
-
-					tableUtils.sortFlags(options)
-
-					text = `{text}\n`
-					text = `{text}      ` .. table.concat(options, `, `) .. `: ` .. flag.description
-				end
-			end
+		if otherCommand.flags then
+			local flags = {}
 
 			text = `{text}\n`
+			text = `{text}    flags:`
 
-			print(text)
+			for flagName, flag in pairs(otherCommand.flags) do
+				if flags[flagName] then
+					continue
+				end
+
+				flags[flagName] = true
+
+				local options = {}
+
+				for option, description in pairs(flag.options) do
+					table.insert(options, option)
+				end
+
+				tableUtils.sortFlags(options)
+
+				text = `{text}\n`
+				text = `{text}      ` .. table.concat(options, `, `) .. `: ` .. flag.description
+			end
 		end
+
+		text = `{text}\n`
+
+		print(text)
 	end
 end
 
 function displaySpecific(command: string, flags)
-    local text = `stamper {command}`
+	local text = `stamper {command}`
 	text = `{text} [flags]`
 	text = `{text}\n`
 	text = `{text}  flags:`
