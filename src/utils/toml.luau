@@ -53,7 +53,7 @@ end
 
 local function parseValue(value: string): any
 	value = trim(value)
-	
+
 	if value:match("^%b{}$") then
 		return parseInlineTable(value)
 	end
@@ -175,7 +175,7 @@ function toml.write(tbl: { [string]: any }): string
 				table.insert(primitives, { key, value })
 			end
 		end
-		
+
 		for _, pair in ipairs(primitives) do
 			local key, value = pair[1], pair[2]
 			table.insert(lines, string.format("%s = %s", key :: string, serializeValue(value)))
@@ -184,7 +184,7 @@ function toml.write(tbl: { [string]: any }): string
 		if #primitives > 0 and #subtables > 0 then
 			table.insert(lines, "")
 		end
-		
+
 		for _, key in ipairs(subtables) do
 			local sub = sectionTable[key]
 			local newPath = sectionPath and (sectionPath .. "." .. key) or key
@@ -204,7 +204,7 @@ function toml.write(tbl: { [string]: any }): string
 				table.insert(lines, string.format("[%s]", newPath))
 
 				writeSection(sub, newPath, false)
-				
+
 				table.insert(lines, "")
 			end
 		end

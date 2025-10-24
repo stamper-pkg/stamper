@@ -81,7 +81,7 @@ function new(data: types.packageData)
 		local items = fs.readDir(directoryPath)
 
 		for _, itemName in pairs(items) do
-			if table.find(buildExcludes, itemName) then 
+			if table.find(buildExcludes, itemName) then
 				continue
 			end
 

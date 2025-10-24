@@ -26,7 +26,7 @@ local command = commandConstructor({
 			helpUtils.displayGeneral()
 		elseif flags.version then
 			local currentVersion = configuration.currentVersion
-			
+
 			print(`stamper {currentVersion.major}.{currentVersion.minor}.{currentVersion.patch}`)
 		end
 	end,

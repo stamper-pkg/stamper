@@ -67,6 +67,7 @@ local command = commandConstructor({
 
 		local dependencies = data.package.dependencies or {}
 
+		-- TODO: add more package targets; pesde, wally, git, etc
 		for alias, dependency in pairs(dependencies) do
 			local dependencyData: installingUtils.installData
 

@@ -57,10 +57,7 @@ local command = commandConstructor({
 		print()
 		print(file)
 
-		local confirm = promptConstructor(
-			"confirm",
-			`[stamper] are these values okay?`
-		)
+		local confirm = promptConstructor("confirm", `[stamper] are these values okay?`)
 
 		if confirm then
 			if flags.verbose then

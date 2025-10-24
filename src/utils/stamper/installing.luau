@@ -9,13 +9,13 @@ export type installData = {
 	content: string,
 
 	target: string,
-	
+
 	flags: { [string]: true },
 }
 
 function install(data: installData)
 	local packageContent = data.content
-	
+
 	local path, _ = packageUtils.getPackageDirectory()
 	local decompressed = packageUtils.decode(packageContent)
 	local decoded = serde.decode("json", decompressed)

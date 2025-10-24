@@ -6,14 +6,14 @@ function sortFlags(flags: { string })
 		local aCount = 0
 		local bCount = 0
 
-		for _, char in pairs(string.split(a, ``)) do 
-			if char == `-` then 
+		for _, char in pairs(string.split(a, ``)) do
+			if char == `-` then
 				aCount += 1
 			end
 		end
 
-		for _, char in pairs(string.split(b, ``)) do 
-			if char == `-` then 
+		for _, char in pairs(string.split(b, ``)) do
+			if char == `-` then
 				bCount += 1
 			end
 		end
@@ -25,7 +25,7 @@ end
 function getTableLength(tbl: { any })
 	local index = 0
 
-	for _, _ in pairs(tbl) do 
+	for _, _ in pairs(tbl) do
 		index += 1
 	end
 
@@ -33,6 +33,6 @@ function getTableLength(tbl: { any })
 end
 
 return {
-    sortFlags = sortFlags,
+	sortFlags = sortFlags,
 	getTableLength = getTableLength,
 }

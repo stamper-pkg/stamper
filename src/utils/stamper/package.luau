@@ -85,8 +85,8 @@ function decode(data: string): any
 	end
 
 	local decoded = compressor.decompress(data)
-	
-	if typeof(decoded) ~= "string" then 
+
+	if typeof(decoded) ~= "string" then
 		decoded = serde.decode(encodeFormat, decoded)
 	end
 

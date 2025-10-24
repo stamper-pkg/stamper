@@ -155,7 +155,7 @@ local command = commandConstructor({
 					fs.removeFile(`./stamper.toml`)
 
 					if flags.verbose then
-						print(`[stamper verbose] confirmed deletion of old stamper.toml`)
+						print(`[stamper verbose] deleted old stamper.toml`)
 					end
 				else
 					if flags.verbose then
