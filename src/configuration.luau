@@ -1,4 +1,4 @@
--- current stamper version
+-- stamper configuration file
 -- written by primiti-ve on github
 
 local currentVersion = {

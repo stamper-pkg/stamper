@@ -3,7 +3,7 @@
 
 local stdio = require("@lune/stdio")
 local task = require("@lune/task")
-local animations = require("./spin/animations")
+local animations = require("@src/utils/spin/animations")
 
 local write = stdio.write
 local spawn = task.spawn

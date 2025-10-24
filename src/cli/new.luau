@@ -1,17 +1,17 @@
 -- cli command for creating a new stamper project
 -- written by primiti-ve on github
 
-local fs = require(`@lune/fs`)
+local fs = require("@lune/fs")
 local stdio = require("@lune/stdio")
 
-local configuration = require(`../configuration`)
-local stamper_toml = require(`../templates/stamper_toml`)
+local configuration = require("@src/configuration")
+local stamper_toml = require("@src/templates/stamper_toml")
 
-local promptConstructor = require(`../constructors/prompt`)
-local commandConstructor = require(`../constructors/cli/command`)
-local flagConstructor = require(`../constructors/cli/flag`)
+local promptConstructor = require("@src/constructors/prompt")
+local commandConstructor = require("@src/constructors/cli/command")
+local flagConstructor = require("@src/constructors/cli/flag")
 
-local helpUtils = require(`../utils/stamper/help`)
+local helpUtils = require("@src/utils/stamper/help")
 
 local projectTypes = {
 	`library`,

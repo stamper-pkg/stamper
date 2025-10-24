@@ -1,11 +1,10 @@
 -- help utils
 -- written by primiti-ve on github
 
-local fs = require(`@lune/fs`)
-local configuration = require(`../../configuration`)
+local configuration = require("@src/configuration")
 
-local commandConstructor = require(`../../constructors/cli/command`)
-local tableUtils = require(`../table`)
+local commandConstructor = require("@src/constructors/cli/command")
+local tableUtils = require("@src/utils/table")
 
 function displayGeneral()
 	local currentVersion = configuration.currentVersion
@@ -22,19 +21,11 @@ function displayGeneral()
 
 	print(`commands:`)
 
-	local commands = {} :: { [string]: commandConstructor.cliData }
+	local commandsList = {} :: { [string]: commandConstructor.cliData }
+	local commands = {}
 
-	for _, name in pairs(fs.readDir(`./src/cli`)) do
-		local prefix = `.luau`
-		local sub = string.sub(name, string.len(name) - #prefix + 1, string.len(name))
-
-		if sub == prefix then
-			name = string.gsub(name, `.luau`, ``)
-
-			local otherCommand = require(`../../cli/{name}`)
-
-			table.insert(commands, otherCommand.displayPriority, otherCommand)
-		end
+	for _, otherCommand in pairs(commandsList) do
+		table.insert(commands, otherCommand.displayPriority, otherCommand)
 	end
 
 	for i = 1, tableUtils.getTableLength(commands) do

@@ -1,3 +1,6 @@
+-- stamper.toml template
+-- written by primiti-ve on github
+
 return [[[header]
 owner = "{package_owner}"
 name = "{package_name}"

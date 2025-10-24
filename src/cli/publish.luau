@@ -1,18 +1,18 @@
 -- cli command for publishing a stamper project to the registry
 -- written by primiti-ve on github
 
-local fs = require(`@lune/fs`)
+local fs = require("@lune/fs")
 local stdio = require("@lune/stdio")
 
-local types = require(`../types`)
-local toml = require(`../utils/toml`)
+local types = require("@src/types")
+local toml = require("@src/utils/toml")
 
-local promptConstructor = require(`../constructors/prompt`)
-local commandConstructor = require(`../constructors/cli/command`)
-local flagConstructor = require(`../constructors/cli/flag`)
+local promptConstructor = require("@src/constructors/prompt")
+local commandConstructor = require("@src/constructors/cli/command")
+local flagConstructor = require("@src/constructors/cli/flag")
 
-local helpUtils = require(`../utils/stamper/help`)
-local networkingUtils = require(`../utils/stamper/networking`)
+local helpUtils = require("@src/utils/stamper/help")
+local networkingUtils = require("@src/utils/stamper/networking")
 
 local _flags = {
 	help = flagConstructor(`help`, { `--help`, `-h` }, `bring up the help menu for the command`),
@@ -78,7 +78,7 @@ local command = commandConstructor({
 
 			local result = networkingUtils.new(data)
 
-			print(result)
+			print(result.message)
 		else
 			if table.find(flags, `verbose`) then
 				print(`[stamper verbose] user cancelled publishing.`)

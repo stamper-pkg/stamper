@@ -1,7 +1,7 @@
 -- lune stdio.prompt wrapper
 -- written by primiti-ve on github
 
-local stdio = require(`@lune/stdio`)
+local stdio = require("@lune/stdio")
 
 return function(kind: string, message: string, guard: ((string) -> (boolean, string?))?, ...: any)
 	local accepted, acceptedText = false, ``

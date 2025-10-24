@@ -5,8 +5,8 @@ local fs = require("@lune/fs")
 local process = require("@lune/process")
 local serde = require("@lune/serde")
 
-local compressor = require("../compressor")
-local packageTemplate = require("../../templates/package")
+local compressor = require("@src/utils/compressor")
+local packageTemplate = require("@src/templates/package")
 
 local suffix = `.stamper`
 local encodeFormat: serde.EncodeDecodeFormat = "json"

@@ -6,12 +6,12 @@ local serde = require("@lune/serde")
 local stdio = require("@lune/stdio")
 local net = require("@lune/net")
 
-local configuration = require("../../configuration")
+local configuration = require("@src/configuration")
 
-local types = require("../../types")
-local spin = require("../../utils/spin")
+local types = require("@src/types")
+local spin = require("@src/utils/spin")
 
-local packageUtils = require("./package")
+local packageUtils = require("@src/utils/stamper/package")
 
 local defaultError = "{status_code} ({response_body})"
 local defaultErrors = {
@@ -94,6 +94,8 @@ function new(data: types.packageData)
 	local srcPath = data.build.src
 	local buildExcludes = serde.decode("json", data.build.excludes) or {}
 
+	srcPath = string.gsub(srcPath, `"`, ``)
+
 	local content = {
 		src = {
 			class = "folder",
@@ -162,7 +164,7 @@ function new(data: types.packageData)
 			print(`[stamper verbose] {response.body}`)
 		end
 
-		return response.body
+		return serde.decode("json", response.body)
 	else
 		throwError(response)
 

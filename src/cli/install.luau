@@ -1,19 +1,20 @@
 -- cli command for installing the dependencies of a stamper project
 -- written by primiti-ve on github
 
-local fs = require(`@lune/fs`)
+local fs = require("@lune/fs")
 local stdio = require("@lune/stdio")
 
-local types = require(`../types`)
-local toml = require(`../utils/toml`)
+local types = require("@src/types")
+local toml = require("@src/utils/toml")
 
-local commandConstructor = require(`../constructors/cli/command`)
-local flagConstructor = require(`../constructors/cli/flag`)
+local commandConstructor = require("@src/constructors/cli/command")
+local flagConstructor = require("@src/constructors/cli/flag")
 
-local helpUtils = require(`../utils/stamper/help`)
-local installingUtils = require(`../utils/stamper/installing`)
-local networkingUtils = require(`../utils/stamper/networking`)
-local tableUtils = require(`../utils/table`)
+local helpUtils = require("@src/utils/stamper/help")
+local installingUtils = require("@src/utils/stamper/installing")
+local networkingUtils = require("@src/utils/stamper/networking")
+local packageUtils = require("@src/utils/stamper/package")
+local tableUtils = require("@src/utils/table")
 
 local _flags = {
 	help = flagConstructor(`help`, { `--help`, `-h` }, `bring up the help menu for the command`),
@@ -74,6 +75,8 @@ local command = commandConstructor({
 		local data = toml.read(file)
 
 		local dependencies = data.package.dependencies or {}
+
+		packageUtils.getPackageDirectory()
 
 		if tableUtils.getTableLength(dependencies) <= 0 then
 			stdio.write(stdio.color("red"))

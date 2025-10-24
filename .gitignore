@@ -1,9 +1,10 @@
 # dev stuff
-.luaurc
 selene.toml
+rokit.toml
+.luaurc
 
 # stamper-related
-stamper.luau
+stamper.exe
 stamper.toml
 stamper_packages
 

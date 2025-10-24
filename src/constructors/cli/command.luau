@@ -1,12 +1,12 @@
 -- cli command constructor
 -- written by primiti-ve on github
 
-local flagConstructor = require(`./flag`)
+local flagConstructor = require("@src/constructors/cli/flag")
 
 export type cliData = {
 	displayCommand: string,
 	command: string,
-	
+
 	description: string,
 
 	flags: { [string]: flagConstructor.flag },

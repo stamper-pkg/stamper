@@ -3,8 +3,8 @@
 
 local serde = require("@lune/serde")
 
-local types = require("../../types")
-local packageUtils = require("./package")
+local types = require("@src/types")
+local packageUtils = require("@src/utils/stamper/package")
 
 function install(data: types.installData)
 	local packageContent = data.content

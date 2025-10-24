@@ -1,14 +1,14 @@
 -- cli command for adding dependencies to stamper.toml
 -- written by primiti-ve on github
 
-local fs = require(`@lune/fs`)
+local fs = require("@lune/fs")
 local stdio = require("@lune/stdio")
 
-local promptConstructor = require(`../constructors/prompt`)
-local commandConstructor = require(`../constructors/cli/command`)
-local flagConstructor = require(`../constructors/cli/flag`)
+local promptConstructor = require("@src/constructors/prompt")
+local commandConstructor = require("@src/constructors/cli/command")
+local flagConstructor = require("@src/constructors/cli/flag")
 
-local helpUtils = require(`../utils/stamper/help`)
+local helpUtils = require("@src/utils/stamper/help")
 
 local dependencyTargets = {
 	"stamper",
