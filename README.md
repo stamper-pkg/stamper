@@ -1,4 +1,4 @@
-# stamper 0.1.0
+![stamper](/assets/images/stamper.png)
 a simple package manager made for luau, in luau
 
 ## installation
