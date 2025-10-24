@@ -9,6 +9,10 @@ local flagConstructor = require(`../constructors/cli/flag`)
 
 local helpUtils = require(`../utils/stamper/help`)
 
+local dependencyTargets = {
+	"stamper",
+}
+
 local _flags = {
 	help = flagConstructor(`help`, { `--help`, `-h` }, `bring up the help menu for the command`),
 	verbose = flagConstructor(`verbose`, { `--verbose`, `-v` }, `enable verbose output`),
@@ -42,9 +46,15 @@ local command = commandConstructor({
 		end
 
 		local file = fs.readFile("./stamper.toml")
-		local dependencyTargets = {
-			"stamper",
-		}
+
+		local sectionPattern = "%[package%.dependencies%]"
+		local sectionStart = string.find(file, sectionPattern)
+
+		if not sectionStart then
+			print(`[stamper] stamper.toml does not have a [package.dependencies] section!`)
+
+			return
+		end
 
 		local dependencyTarget = promptConstructor(
 			"select",
@@ -113,20 +123,34 @@ local command = commandConstructor({
 				dependencyVersion = "latest"
 			end
 
-			local dependencyData =
-				string.format('%s = { owner = "%s", name = "%s", version = "%s" }', name, owner, name, dependencyVersion)
+			local dependencyData = string.format(
+				'%s = { owner = "%s", name = "%s", version = "%s" }',
+				name,
+				owner,
+				name,
+				dependencyVersion
+			)
 
-			local sectionPattern = "%[package%.dependencies%]"
-			local sectionStart = string.find(file, sectionPattern)
+			local before, depsSection, after = file:match("^(.-)%[package%.dependencies%]%s*(.-)\n%[.-%]\n(.*)$")
 
-			if sectionStart then
-				local before = string.sub(file, 1, sectionStart + #"[package.dependencies]")
-				local after = string.sub(file, sectionStart + #"[package.dependencies]" + 1)
-                
-				file = string.format("%s\n%s%s\n", before, dependencyData, after)
-			else
-				file = string.format("%s\n[package.dependencies]\n%s\n", file, dependencyData)
+			if not before then
+				before, depsSection = file:match("^(.-)%[package%.dependencies%]%s*(.*)$")
+				after = ""
 			end
+
+			depsSection = depsSection:gsub("^%s+", ""):gsub("%s+$", "")
+
+			local newDepsSection
+
+			if depsSection == "" then
+				newDepsSection = dependencyData
+			else
+				newDepsSection = depsSection .. "\n" .. dependencyData
+			end
+
+			file = string
+				.format("%s[package.dependencies]\n%s\n\n%s", before, newDepsSection, after)
+				:gsub("\n\n\n+", "\n\n")
 		end
 
 		fs.writeFile("./stamper.toml", file)

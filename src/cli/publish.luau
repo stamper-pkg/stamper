@@ -59,7 +59,7 @@ local command = commandConstructor({
 
 		local confirm = promptConstructor(
 			"confirm",
-			`[stamper] are these values okay? read them carefully! you will not be able to take back published packages.`
+			`[stamper] are these values okay?`
 		)
 
 		if confirm then

@@ -31,7 +31,7 @@ function displayGeneral()
 		if sub == prefix then
 			name = string.gsub(name, `.luau`, ``)
 
-			local otherCommand = require(`../cli/{name}`)
+			local otherCommand = require(`../../cli/{name}`)
 
 			table.insert(commands, otherCommand.displayPriority, otherCommand)
 		end

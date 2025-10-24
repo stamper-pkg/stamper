@@ -14,8 +14,18 @@ export type packageData = {
 		description: string,
 	},
 
+	registry: {
+		default: string,
+	},
+
+	build: {
+		src: string,
+		excludes: { string },
+	},
+
 	package: {
 		version: string,
+		type: string,
 		public: boolean,
 
 		dependencies: { [string]: packageDependency },

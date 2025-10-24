@@ -19,44 +19,78 @@ function getPackageDirectory()
 	return path, fs.readDir(path)
 end
 
-function createPackageLink(path: string, alias: string, data: string)
-    if not path or not data then 
-        return
-    end
-
-	local packagePath = `{path}/{alias}.luau`
-
-	if fs.isFile(packagePath) then
-		fs.removeFile(packagePath)
+function createPackageLink(path: string, alias: string, data: any)
+	if not path or not data then
+		return
 	end
 
-	fs.writeFile(packagePath, data)
+	local packageRoot = `{path}/{alias}`
+
+	if fs.isDir(packageRoot) then
+		fs.removeDir(packageRoot)
+	elseif fs.isFile(packageRoot) then
+		fs.removeFile(packageRoot)
+	end
+
+	local function writeNode(node, currentPath)
+		if not node or type(node) ~= "table" then
+			return
+		end
+
+		local classType = node.class
+
+		if classType == "folder" then
+			fs.writeDir(currentPath)
+		elseif classType == "client" then
+			fs.writeFile(`{currentPath}.client.luau`, node.contents or "")
+		elseif classType == "server" then
+			fs.writeFile(`{currentPath}.server.luau`, node.contents or "")
+		elseif classType == "module" then
+			fs.writeFile(`{currentPath}.luau`, node.contents or "")
+		end
+
+		if node.children then
+			for childName, childNode in pairs(node.children or {}) do
+				local childPath = `{currentPath}/{childName}`
+
+				writeNode(childNode, childPath)
+			end
+		end
+	end
+
+	for name, node in pairs(data) do
+		local basePath = `{packageRoot}/{name}`
+
+		writeNode(node, basePath)
+	end
+
+	print(`[stamper] package "{alias}" written successfully to {packageRoot}`)
 end
 
-function encode(data: string)
-    if not data then 
-        return nil
-    end
+function encode(data: any): string?
+	if data == nil then
+		return nil
+	end
 
-	local parsed = data
+	local encoded = serde.encode(encodeFormat, data)
 
-	parsed = serde.encode(encodeFormat, parsed)
-	parsed = compressor.compress(parsed)
+	encoded = compressor.compress(encoded)
 
-	return parsed
+	return encoded
 end
 
-function decode(data: string)
-    if not data then 
-        return nil
-    end
+function decode(data: string): any
+	if not data then
+		return nil
+	end
 
-	local parsed = data
+	local decoded = compressor.decompress(data)
+	
+	if typeof(decoded) ~= "string" then 
+		decoded = serde.decode(encodeFormat, decoded)
+	end
 
-	parsed = compressor.decompress(parsed)
-	parsed = serde.decode(encodeFormat, parsed)
-
-	return parsed
+	return decoded
 end
 
 return {

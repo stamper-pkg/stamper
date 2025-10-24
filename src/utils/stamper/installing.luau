@@ -1,6 +1,7 @@
 -- installing utils
 -- written by primiti-ve on github
 
+local serde = require("@lune/serde")
 local packageUtils = require("./package")
 
 export type installData = {
@@ -14,13 +15,12 @@ export type installData = {
 
 function install(data: installData)
 	local packageContent = data.content
-
-	packageContent = packageUtils.encode(packageContent)
 	
 	local path, _ = packageUtils.getPackageDirectory()
 	local decompressed = packageUtils.decode(packageContent)
+	local decoded = serde.decode("json", decompressed)
 
-	packageUtils.createPackageLink(path, data.alias, decompressed)
+	packageUtils.createPackageLink(path, data.alias, decoded)
 end
 
 return {

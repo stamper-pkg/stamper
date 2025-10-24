@@ -4,13 +4,23 @@
 local fs = require(`@lune/fs`)
 
 local configuration = require(`../configuration`)
-local toml = require(`../utils/toml`)
+local stamper_toml = require(`../templates/stamper_toml`)
 
 local promptConstructor = require(`../constructors/prompt`)
 local commandConstructor = require(`../constructors/cli/command`)
 local flagConstructor = require(`../constructors/cli/flag`)
 
 local helpUtils = require(`../utils/stamper/help`)
+
+local projectTypes = {
+	"library",
+	"game",
+}
+
+local publicSettings = {
+	["library"] = true,
+	["game"] = false,
+}
 
 local _flags = {
 	help = flagConstructor(`help`, { `--help`, `-h` }, `bring up the help menu for the command`),
@@ -39,9 +49,26 @@ local command = commandConstructor({
 			return
 		end
 
+		local projectType = promptConstructor(
+			"select",
+			"[stamper] what would you like your new stamper project to be?",
+			function(index: number)
+				local text = projectTypes[index]
+
+				if not text then
+					return false, "provided type is not a valid type"
+				end
+
+				return true, nil
+			end,
+			projectTypes
+		)
+
+		projectType = projectTypes[projectType]
+
 		local owner = promptConstructor(
 			`text`,
-			`[stamper] who is the owner of the stamper project?`,
+			`[stamper] who is the owner of your new stamper {projectType}?`,
 			function(text: string)
 				if not text then
 					return false, `invalid package owner`
@@ -61,7 +88,7 @@ local command = commandConstructor({
 
 		local name = promptConstructor(
 			`text`,
-			`[stamper] what is the name of the stamper project?`,
+			`[stamper] what is the name of your new stamper {projectType}?`,
 			function(text: string)
 				if not text then
 					return false, `invalid package name`
@@ -81,7 +108,7 @@ local command = commandConstructor({
 
 		local description = promptConstructor(
 			`text`,
-			`[stamper] what is the description of your stamper project?`,
+			`[stamper] what is the description of your new stamper {projectType}?`,
 			function(text: string)
 				if not text or text == `` then
 					return true, nil
@@ -95,26 +122,16 @@ local command = commandConstructor({
 			end
 		)
 
-		local newProject = toml.write({
-			registry = {
-				default = configuration.baseUrl,
-			},
+		local newProject = stamper_toml
 
-			header = {
-				owner = owner,
-				name = name,
-				description = description,
-			},
+		newProject = string.gsub(newProject, "{package_name}", name)
+		newProject = string.gsub(newProject, "{package_owner}", owner)
+		newProject = string.gsub(newProject, "{package_description}", description)
 
-			package = {
-				version = "0.1.0",
-				public = true,
+		newProject = string.gsub(newProject, "{default_registry}", configuration.baseUrl)
 
-				dependencies = {},
-			},
-		})
-
-		newProject = `{newProject}\n`
+		newProject = string.gsub(newProject, "{package_type}", projectType)
+		newProject = string.gsub(newProject, "{package_public}", tostring(publicSettings[projectType]))
 
 		print()
 		print(newProject)

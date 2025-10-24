@@ -67,7 +67,6 @@ local command = commandConstructor({
 
 		local dependencies = data.package.dependencies or {}
 
-		-- TODO: add more targets
 		for alias, dependency in pairs(dependencies) do
 			local dependencyData: installingUtils.installData
 
@@ -87,14 +86,17 @@ local command = commandConstructor({
 				}
 
 				dependencyResult = networkingUtils.get(dependencyResult)
-				dependencyData = {
-					content = dependencyResult,
-					alias = alias,
 
-					target = `stamper`,
+				if dependencyResult ~= nil then
+					dependencyData = {
+						content = dependencyResult,
+						alias = alias,
 
-					flags = flags,
-				} :: installingUtils.installData
+						target = `stamper`,
+
+						flags = flags,
+					} :: installingUtils.installData
+				end
 			end
 
 			if dependencyData then
