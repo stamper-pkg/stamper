@@ -3,6 +3,7 @@
 
 local process = require(`@lune/process`)
 local fs = require(`@lune/fs`)
+local stdio = require("@lune/stdio")
 
 local levenshtein = require(`./utils/levenshtein`)
 
@@ -46,8 +47,12 @@ if not command then
 			local correctedCommand = commandNames[1]
 
 			if correctedCommand.distance <= 2 then
+				stdio.write(stdio.color("red"))
+
 				print(`[stamper] no command named {commandName} found!`)
 				print(`          did you mean {correctedCommand.name}?`)
+
+				stdio.write(stdio.color("reset"))
 
 				return
 			end
@@ -60,5 +65,7 @@ end
 if command then
 	command.execute(args)
 else
+	stdio.write(stdio.color("red"))
 	print(`[stamper] no command supplied!`)
+	stdio.write(stdio.color("reset"))
 end

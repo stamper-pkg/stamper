@@ -34,4 +34,14 @@ export type packageData = {
 	flags: { [string]: true },
 }
 
+export type installData = {
+	alias: string,
+	name: string,
+
+	content: string,
+	target: string,
+
+	flags: { [string]: true },
+}
+
 return nil

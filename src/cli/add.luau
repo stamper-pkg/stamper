@@ -2,6 +2,7 @@
 -- written by primiti-ve on github
 
 local fs = require(`@lune/fs`)
+local stdio = require("@lune/stdio")
 
 local promptConstructor = require(`../constructors/prompt`)
 local commandConstructor = require(`../constructors/cli/command`)
@@ -28,20 +29,24 @@ local command = commandConstructor({
 	flags = _flags,
 
 	execute = function(args, flags)
-		if flags.help then
+		if table.find(flags, `help`) then
 			helpUtils.displaySpecific(`add`, _flags)
 
 			return
 		end
 
 		if not fs.isFile(`./stamper.toml`) then
+			stdio.write(stdio.color("red"))
+
 			print(`[stamper] stamper.toml file does not exist`)
 			print(`          please create one with "stamper new"`)
+
+			stdio.write(stdio.color("reset"))
 
 			return
 		end
 
-		if flags.verbose then
+		if table.find(flags, `verbose`) then
 			print(`[stamper verbose] installing packages`)
 		end
 
@@ -51,14 +56,16 @@ local command = commandConstructor({
 		local sectionStart = string.find(file, sectionPattern)
 
 		if not sectionStart then
+			stdio.write(stdio.color("red"))
 			print(`[stamper] stamper.toml does not have a [package.dependencies] section!`)
+			stdio.write(stdio.color("reset"))
 
 			return
 		end
 
 		local dependencyTarget = promptConstructor(
 			"select",
-			"[stamper] what target is the stamper dependency?",
+			"[stamper] what target is the stamper dependency? (required)",
 			function(index: number)
 				local text = dependencyTargets[index]
 
@@ -76,7 +83,7 @@ local command = commandConstructor({
 		if dependencyTarget == "stamper" then
 			local owner = promptConstructor(
 				`text`,
-				`[stamper] who is the owner of the stamper dependency?`,
+				`[stamper] who is the owner of the stamper dependency? (required)`,
 				function(text: string)
 					if not text then
 						return false, `invalid dependency owner`
@@ -96,18 +103,18 @@ local command = commandConstructor({
 
 			local name = promptConstructor(
 				`text`,
-				`[stamper] what is the name of the stamper dependency?`,
+				`[stamper] what is the name of the stamper dependency? (required)`,
 				function(text: string)
 					if not text then
-						return false, `invalid dependency name`
+						return false, `invalid dependency name.`
 					end
 
 					if tonumber(text) then
-						return false, `dependency name must be a string`
+						return false, `dependency name must be a string.`
 					end
 
 					if #text < 1 or #text > 50 then
-						return false, `dependency name must be within 1 and 50 characters long`
+						return false, `dependency name must be within 1 and 50 characters long.`
 					end
 
 					return true, nil
@@ -116,7 +123,7 @@ local command = commandConstructor({
 
 			local dependencyVersion = promptConstructor(
 				`text`,
-				`[stamper] what is the version of the stamper dependency? (leaving blank will default to latest)`
+				`[stamper] what is the version of the stamper dependency? (optional, leaving blank will default to latest)`
 			)
 
 			if dependencyVersion == "" then
@@ -148,9 +155,8 @@ local command = commandConstructor({
 				newDepsSection = depsSection .. "\n" .. dependencyData
 			end
 
-			file = string
-				.format("%s[package.dependencies]\n%s\n\n%s", before, newDepsSection, after)
-				:gsub("\n\n\n+", "\n\n")
+			file = string.format("%s[package.dependencies]\n%s\n\n%s", before, newDepsSection, after)
+			file = string.gsub(file, "\n\n\n+", "\n\n")
 		end
 
 		fs.writeFile("./stamper.toml", file)

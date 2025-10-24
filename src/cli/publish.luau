@@ -2,8 +2,9 @@
 -- written by primiti-ve on github
 
 local fs = require(`@lune/fs`)
+local stdio = require("@lune/stdio")
 
-local types = require("../types")
+local types = require(`../types`)
 local toml = require(`../utils/toml`)
 
 local promptConstructor = require(`../constructors/prompt`)
@@ -28,28 +29,37 @@ local command = commandConstructor({
 	flags = _flags,
 
 	execute = function(args, flags)
-		if flags.help then
+		if table.find(flags, `help`) then
 			helpUtils.displaySpecific(`publish`, _flags)
 
 			return
 		end
 
 		if not fs.isFile(`./stamper.toml`) then
-			print(`[stamper] stamper.toml file does not exist`)
-			print(`          please create one with "stamper new"`)
+			stdio.write(stdio.color("red"))
+
+			print(`[stamper] stamper.toml file does not exist!`)
+			print(`          create one with "stamper new".`)
+
+			stdio.write(stdio.color("reset"))
 
 			return
 		end
 
-		if flags.verbose then
-			print(`[stamper verbose] publishing package`)
+		if table.find(flags, `verbose`) then
+			print(`[stamper verbose] publishing package!`)
 		end
 
-		local file = fs.readFile("./stamper.toml")
+		local file = fs.readFile(`./stamper.toml`)
 		local data = toml.read(file) :: types.packageData
 
 		if not data.package.public then
-			print(`[stamper] package is set to private`)
+			stdio.write(stdio.color("red"))
+
+			print(`[stamper] package is set to private!`)
+			print(`          set "public" to true before running this again.`)
+
+			stdio.write(stdio.color("reset"))
 
 			return
 		end
@@ -57,11 +67,11 @@ local command = commandConstructor({
 		print()
 		print(file)
 
-		local confirm = promptConstructor("confirm", `[stamper] are these values okay?`)
+		local confirm = promptConstructor(`confirm`, `[stamper] are these values okay?`)
 
 		if confirm then
-			if flags.verbose then
-				print(`[stamper verbose] user confirmed publishing`)
+			if table.find(flags, `verbose`) then
+				print(`[stamper verbose] user confirmed publishing!`)
 			end
 
 			data.flags = flags
@@ -70,8 +80,8 @@ local command = commandConstructor({
 
 			print(result)
 		else
-			if flags.verbose then
-				print(`[stamper verbose] user cancelled publishing`)
+			if table.find(flags, `verbose`) then
+				print(`[stamper verbose] user cancelled publishing.`)
 			end
 		end
 	end,

@@ -6,6 +6,9 @@ local process = require("@lune/process")
 local serde = require("@lune/serde")
 
 local compressor = require("../compressor")
+local packageTemplate = require("../../templates/package")
+
+local suffix = `.stamper`
 local encodeFormat: serde.EncodeDecodeFormat = "json"
 
 function getPackageDirectory()
@@ -16,15 +19,22 @@ function getPackageDirectory()
 		fs.writeDir(path)
 	end
 
+	if not fs.isDir(`{path}/{suffix}`) then
+		fs.writeDir(`{path}/{suffix}`)
+	end
+
 	return path, fs.readDir(path)
 end
 
-function createPackageLink(path: string, alias: string, data: any)
+function createPackageLink(path: string, alias: string, name: string, data: any)
 	if not path or not data then
 		return
 	end
 
-	local packageRoot = `{path}/{alias}`
+	alias = string.gsub(alias, `"`, ``)
+	name = string.gsub(name, `"`, ``)
+
+	local packageRoot = `{path}/{suffix}/{name}`
 
 	if fs.isDir(packageRoot) then
 		fs.removeDir(packageRoot)
@@ -58,11 +68,17 @@ function createPackageLink(path: string, alias: string, data: any)
 		end
 	end
 
-	for name, node in pairs(data) do
-		local basePath = `{packageRoot}/{name}`
+	for nodeName, node in pairs(data) do
+		local basePath = `{packageRoot}/{nodeName}`
 
 		writeNode(node, basePath)
 	end
+
+	local packageDirector = packageTemplate
+
+	packageDirector = string.gsub(packageDirector, "{package_name}", name)
+
+	fs.writeFile(`{path}/{alias}.luau`, packageDirector)
 
 	print(`[stamper] package "{alias}" written successfully to {packageRoot}`)
 end

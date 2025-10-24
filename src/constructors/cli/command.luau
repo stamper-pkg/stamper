@@ -31,7 +31,7 @@ return function(data: cliData)
 
 				for name in pairs(flag.options) do
 					if name == arg then
-						flags[flagName] = true
+						table.insert(flags, flagName)
 						table.remove(args, i)
 					end
 				end

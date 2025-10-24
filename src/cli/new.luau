@@ -2,6 +2,7 @@
 -- written by primiti-ve on github
 
 local fs = require(`@lune/fs`)
+local stdio = require("@lune/stdio")
 
 local configuration = require(`../configuration`)
 local stamper_toml = require(`../templates/stamper_toml`)
@@ -13,13 +14,13 @@ local flagConstructor = require(`../constructors/cli/flag`)
 local helpUtils = require(`../utils/stamper/help`)
 
 local projectTypes = {
-	"library",
-	"game",
+	`library`,
+	`game`,
 }
 
 local publicSettings = {
-	["library"] = true,
-	["game"] = false,
+	[`library`] = true,
+	[`game`] = false,
 }
 
 local _flags = {
@@ -37,26 +38,28 @@ local command = commandConstructor({
 	flags = _flags,
 
 	execute = function(args, flags)
-		if flags.help then
+		if table.find(flags, `help`) then
 			helpUtils.displaySpecific(`new`, _flags)
 
 			return
 		end
 
 		if fs.isFile(`./stamper.toml`) then
-			print(`[stamper] stamper.toml file already exists`)
+			stdio.write(stdio.color("red"))
+			print(`[stamper] stamper.toml file already exists!`)
+			stdio.write(stdio.color("reset"))
 
 			return
 		end
 
 		local projectType = promptConstructor(
-			"select",
-			"[stamper] what would you like your new stamper project to be?",
+			`select`,
+			`[stamper] what would you like your new stamper project to be? (required)`,
 			function(index: number)
 				local text = projectTypes[index]
 
 				if not text then
-					return false, "provided type is not a valid type"
+					return false, `provided type is not a valid type.`
 				end
 
 				return true, nil
@@ -68,18 +71,18 @@ local command = commandConstructor({
 
 		local owner = promptConstructor(
 			`text`,
-			`[stamper] who is the owner of your new stamper {projectType}?`,
+			`[stamper] who is the owner of your new stamper {projectType}? (required)`,
 			function(text: string)
 				if not text then
-					return false, `invalid package owner`
+					return false, `invalid package owner.`
 				end
 
 				if tonumber(text) then
-					return false, `package owner must be a string`
+					return false, `package owner must be a string.`
 				end
 
 				if #text < 1 or #text > 50 then
-					return false, `package owner must be within 1 and 50 characters long`
+					return false, `package owner must be within 1 and 50 characters long.`
 				end
 
 				return true, nil
@@ -88,18 +91,18 @@ local command = commandConstructor({
 
 		local name = promptConstructor(
 			`text`,
-			`[stamper] what is the name of your new stamper {projectType}?`,
+			`[stamper] what is the name of your new stamper {projectType}? (required)`,
 			function(text: string)
 				if not text then
-					return false, `invalid package name`
+					return false, `invalid package name.`
 				end
 
 				if tonumber(text) then
-					return false, `package name must be a string`
+					return false, `package name must be a string.`
 				end
 
 				if #text < 1 or #text > 50 then
-					return false, `package name must be within 1 and 50 characters long`
+					return false, `package name must be within 1 and 50 characters long.`
 				end
 
 				return true, nil
@@ -108,14 +111,14 @@ local command = commandConstructor({
 
 		local description = promptConstructor(
 			`text`,
-			`[stamper] what is the description of your new stamper {projectType}?`,
+			`[stamper] what is the description of your new stamper {projectType}? (optional)`,
 			function(text: string)
 				if not text or text == `` then
 					return true, nil
 				end
 
 				if #text < 1 or #text > 250 then
-					return false, `invalid package description`
+					return false, `invalid package description.`
 				end
 
 				return true, nil
@@ -136,38 +139,40 @@ local command = commandConstructor({
 		print()
 		print(newProject)
 
-		local confirmed = promptConstructor(`confirm`, `do these options look good?`)
+		local confirmed = promptConstructor(`confirm`, `do these options look good? (required)`)
 
 		if confirmed then
-			if flags.verbose then
-				print(`[stamper verbose] confirmed creation of new stamper project`)
+			if table.find(flags, `verbose`) then
+				print(`[stamper verbose] confirmed creation of new stamper project!`)
 			end
 
 			if fs.isFile(`./stamper.toml`) then
-				local delete =
-					promptConstructor(`confirm`, `stamper.toml file already exists! would you like to delete it?`)
+				local delete = promptConstructor(
+					`confirm`,
+					`stamper.toml file already exists! would you like to delete it? (optional)`
+				)
 
 				if delete then
-					if flags.verbose then
-						print(`[stamper verbose] deleting old stamper.toml`)
+					if table.find(flags, `verbose`) then
+						print(`[stamper verbose] deleting old stamper.toml.`)
 					end
 
 					fs.removeFile(`./stamper.toml`)
 
-					if flags.verbose then
-						print(`[stamper verbose] deleted old stamper.toml`)
+					if table.find(flags, `verbose`) then
+						print(`[stamper verbose] deleted old stamper.toml!`)
 					end
 				else
-					if flags.verbose then
-						print(`[stamper verbose] user cancelled operation`)
+					if table.find(flags, `verbose`) then
+						print(`[stamper verbose] user cancelled operation!`)
 					end
 
 					return
 				end
 			end
 		else
-			if flags.verbose then
-				print(`[stamper verbose] cancelled operation`)
+			if table.find(flags, `verbose`) then
+				print(`[stamper verbose] user cancelled operation!`)
 			end
 
 			return
@@ -175,11 +180,11 @@ local command = commandConstructor({
 
 		fs.writeFile(`./stamper.toml`, newProject)
 
-		if flags.verbose then
-			print(`[stamper verbose] wrote new stamper.toml`)
+		if table.find(flags, `verbose`) then
+			print(`[stamper verbose] wrote new stamper.toml!`)
 		end
 
-		print(`[stamper] run stamper install to get your packages`)
+		print(`[stamper] run "stamper install" to get your packages.`)
 	end,
 })
 

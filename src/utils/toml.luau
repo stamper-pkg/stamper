@@ -5,7 +5,7 @@ local toml = {}
 
 --// utility
 local function trim(str: string): string
-	return (string.match(str, "^%s*(.-)%s*$"))
+	return (string.match(str, `^%s*(.-)%s*$`))
 end
 
 local function parseInlineTable(value: string): { [string]: any }
@@ -17,17 +17,17 @@ local function parseInlineTable(value: string): { [string]: any }
 		return tbl
 	end
 
-	for pair in value:gmatch("[^,]+") do
-		local key, val = pair:match("^(.-)=(.+)$")
+	for pair in value:gmatch(`[^,]+`) do
+		local key, val = pair:match(`^(.-)=(.+)$`)
 
 		if key and val then
 			key = trim(key)
 			val = trim(val)
 
 			tbl[key] = (function(v)
-				if v == "true" then
+				if v == `true` then
 					return true
-				elseif v == "false" then
+				elseif v == `false` then
 					return false
 				end
 
@@ -37,7 +37,7 @@ local function parseInlineTable(value: string): { [string]: any }
 					return num
 				end
 
-				local strValue = v:match('^"(.-)"$')
+				local strValue = v:match('^`(.-)`$')
 
 				if strValue then
 					return strValue
@@ -58,9 +58,9 @@ local function parseValue(value: string): any
 		return parseInlineTable(value)
 	end
 
-	if value == "true" then
+	if value == `true` then
 		return true
-	elseif value == "false" then
+	elseif value == `false` then
 		return false
 	end
 
@@ -70,7 +70,7 @@ local function parseValue(value: string): any
 		return num
 	end
 
-	local strValue = (value :: string):match('^"(.-)"$')
+	local strValue = (value :: string):match('^`(.-)`$')
 
 	if strValue then
 		return strValue
@@ -82,7 +82,7 @@ end
 local function getOrCreateSection(root: {}, sectionPath: string)
 	local current = root
 
-	for part in sectionPath:gmatch("[^%.]+") do
+	for part in sectionPath:gmatch(`[^%.]+`) do
 		part = trim(part)
 
 		current[part] = current[part] or {}
@@ -97,21 +97,21 @@ function toml.read(input: string): { [string]: any }
 	local data = {}
 	local currentSection = data
 
-	for line in input:gmatch("[^\r\n]+") do
+	for line in input:gmatch(`[^\r\n]+`) do
 		line = trim(line)
 
-		if line == "" or (line :: string):match("^#") then
+		if line == `` or (line :: string):match(`^#`) then
 			continue
 		end
 
-		local section = (line :: string):match("^%[([^%]]+)%]$")
+		local section = (line :: string):match(`^%[([^%]]+)%]$`)
 
 		if section then
 			currentSection = getOrCreateSection(data, section)
 			continue
 		end
 
-		local key, value = (line :: string):match("^(.-)=(.+)$")
+		local key, value = (line :: string):match(`^(.-)=(.+)$`)
 
 		if key and value then
 			key = trim(key)
@@ -128,24 +128,24 @@ end
 local function serializeValue(value: any): string
 	local t = typeof(value)
 
-	if t == "boolean" then
-		return value and "true" or "false"
-	elseif t == "number" then
+	if t == `boolean` then
+		return value and `true` or `false`
+	elseif t == `number` then
 		return tostring(value)
-	elseif t == "string" then
-		local escaped = value:gsub('"', '\\"')
+	elseif t == `string` then
+		local escaped = value:gsub('`', '\\`')
 
-		return string.format('"%s"', escaped)
-	elseif t == "table" then
+		return string.format('`%s`', escaped)
+	elseif t == `table` then
 		local parts = {}
 
 		for k, v in pairs(value) do
-			if typeof(v) ~= "table" then
-				table.insert(parts, string.format("%s = %s", k :: string, serializeValue(v)))
+			if typeof(v) ~= `table` then
+				table.insert(parts, string.format(`%s = %s`, k :: string, serializeValue(v)))
 			end
 		end
 
-		return string.format("{ %s }", table.concat(parts, ", "))
+		return string.format("{ %s }", table.concat(parts, `, `))
 	else
 		error(`Unsupported TOML value type: {t}`)
 	end
@@ -153,7 +153,7 @@ end
 
 local function isFlatTable(t: {}): boolean
 	for _, v in pairs(t) do
-		if typeof(v) == "table" then
+		if typeof(v) == `table` then
 			return false
 		end
 	end
@@ -169,7 +169,7 @@ function toml.write(tbl: { [string]: any }): string
 		local subtables = {}
 
 		for key, value in pairs(sectionTable) do
-			if typeof(value) == "table" then
+			if typeof(value) == `table` then
 				table.insert(subtables, key)
 			else
 				table.insert(primitives, { key, value })
@@ -178,45 +178,45 @@ function toml.write(tbl: { [string]: any }): string
 
 		for _, pair in ipairs(primitives) do
 			local key, value = pair[1], pair[2]
-			table.insert(lines, string.format("%s = %s", key :: string, serializeValue(value)))
+			table.insert(lines, string.format(`%s = %s`, key :: string, serializeValue(value)))
 		end
 
 		if #primitives > 0 and #subtables > 0 then
-			table.insert(lines, "")
+			table.insert(lines, ``)
 		end
 
 		for _, key in ipairs(subtables) do
 			local sub = sectionTable[key]
-			local newPath = sectionPath and (sectionPath .. "." .. key) or key
+			local newPath = sectionPath and (sectionPath .. `.` .. key) or key
 
 			if next(sub) == nil then
-				table.insert(lines, string.format("[%s]", newPath))
-				table.insert(lines, "")
+				table.insert(lines, string.format(`[%s]`, newPath))
+				table.insert(lines, ``)
 			elseif isRoot then
-				table.insert(lines, string.format("[%s]", key))
+				table.insert(lines, string.format(`[%s]`, key))
 
 				writeSection(sub, key, false)
 
-				table.insert(lines, "")
+				table.insert(lines, ``)
 			elseif isFlatTable(sub) then
-				table.insert(lines, string.format("%s = %s", key, serializeValue(sub)))
+				table.insert(lines, string.format(`%s = %s`, key, serializeValue(sub)))
 			else
-				table.insert(lines, string.format("[%s]", newPath))
+				table.insert(lines, string.format(`[%s]`, newPath))
 
 				writeSection(sub, newPath, false)
 
-				table.insert(lines, "")
+				table.insert(lines, ``)
 			end
 		end
 	end
 
 	writeSection(tbl, nil, true)
 
-	while lines[#lines] == "" do
+	while lines[#lines] == `` do
 		table.remove(lines)
 	end
 
-	return table.concat(lines, "\n")
+	return table.concat(lines, `\n`)
 end
 
 return toml

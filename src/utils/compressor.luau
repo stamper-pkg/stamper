@@ -1,6 +1,6 @@
 local Compressor = {}
 
-local HEADER = "LZW1"
+local HEADER = `LZW1`
 local BASE = 95
 local ASCII_OFFSET = 32
 local MAX_CODE = 4095
@@ -15,7 +15,7 @@ function Compressor.compress(input: string): string
 
 	local next_code = FIRST_CODE
 
-	local w = ""
+	local w = ``
 	local out_parts = {}
 
 	for i = 1, #input do
@@ -41,7 +41,7 @@ function Compressor.compress(input: string): string
 		end
 	end
 
-	if w ~= "" then
+	if w ~= `` then
 		local code = dict[w]
 		local a = math.floor(code / BASE)
 		local b = code % BASE
@@ -63,14 +63,14 @@ function Compressor.decompress(input: string): string
 
 	while p <= #payload do
 		if p + 1 > #payload then
-			error("Malformed compressed input (odd length)")
+			error(`Malformed compressed input (odd length)`)
 		end
 
 		local c1 = string.byte(payload, p) - ASCII_OFFSET
 		local c2 = string.byte(payload, p + 1) - ASCII_OFFSET
 
 		if not c1 or not c2 or c1 < 0 or c1 >= BASE or c2 < 0 or c2 >= BASE then
-			error("Malformed compressed input (invalid printable chars)")
+			error(`Malformed compressed input (invalid printable chars)`)
 		end
 
 		local code = c1 * BASE + c2
@@ -100,7 +100,7 @@ function Compressor.decompress(input: string): string
 			if code == next_code and prev ~= nil then
 				entry = prev .. string.sub(prev, 1, 1)
 			else
-				error("Bad compressed code sequence")
+				error(`Bad compressed code sequence`)
 			end
 		end
 

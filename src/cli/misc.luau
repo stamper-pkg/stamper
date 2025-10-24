@@ -22,7 +22,7 @@ local command = commandConstructor({
 	flags = _flags,
 
 	execute = function(args, flags)
-		if flags.help then
+		if table.find(flags, `help`) then
 			helpUtils.displayGeneral()
 		elseif flags.version then
 			local currentVersion = configuration.currentVersion
