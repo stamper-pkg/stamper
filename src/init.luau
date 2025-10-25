@@ -1,24 +1,15 @@
 -- stamper's entry point
 -- written by primiti-ve on github
 
-local fs = require("@lune/fs")
 local process = require("@lune/process")
 local stdio = require("@lune/stdio")
 
 local levenshtein = require("@src/utils/levenshtein")
 
 local args = process.args
-local commands = {}
+local commands = require("@src/cli")
 
 args = table.clone(args)
-
-for _, name in pairs(fs.readDir("./src/cli")) do 
-	name = string.gsub(name, ".luau", "")
-
-	local otherCommand = require(`./src/cli/{name}`)
-
-	commands[name] = otherCommand
-end
 
 local commandName = args[1]
 local command = commands[commandName]

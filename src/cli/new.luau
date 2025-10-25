@@ -177,7 +177,7 @@ local command = commandConstructor({
 
 			return
 		end
-
+		
 		fs.writeFile(`./stamper.toml`, newProject)
 
 		if table.find(flags, `verbose`) then

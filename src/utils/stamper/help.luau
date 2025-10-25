@@ -1,7 +1,10 @@
 -- help utils
 -- written by primiti-ve on github
 
-local configuration = require("@src/configuration")
+local fs = require("@lune/fs")
+local toml = require("@src/utils/toml")
+
+local configuration = toml.read(fs.readFile("./src/configuration.toml"))
 
 local commandConstructor = require("@src/constructors/cli/command")
 local tableUtils = require("@src/utils/table")
@@ -21,7 +24,7 @@ function displayGeneral()
 
 	print(`commands:`)
 
-	local commandsList = {} :: { [string]: commandConstructor.cliData }
+	local commandsList = require("@src/commands").commands :: { [string]: commandConstructor.cliData }
 	local commands = {}
 
 	for _, otherCommand in pairs(commandsList) do
@@ -30,6 +33,11 @@ function displayGeneral()
 
 	for i = 1, tableUtils.getTableLength(commands) do
 		local otherCommand = commands[i]
+
+		if not otherCommand then 
+			continue
+		end
+
 		local text
 
 		if otherCommand.displayCommand then

@@ -3,9 +3,12 @@ selene.toml
 rokit.toml
 
 # stamper-related
-stamper.exe
 stamper.toml
 stamper_packages
+
+# github releases stuff
+releases
+build
 
 # misc
 example
