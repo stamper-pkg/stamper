@@ -1,5 +1,7 @@
 ![stamper](/assets/images/stamper.png)
 a simple package manager made for luau, in luau
+    
+rokit support is currently broken! please use the releases provided
 
 ## installation
 1. if you don't have lune installed, install it!!!
