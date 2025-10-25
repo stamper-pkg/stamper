@@ -22,6 +22,10 @@ jobs:
         uses: CompeyDev/setup-rokit@v0.1.2
         with:
           token: ${{ github.token }}
+      
+      - name: setup rokit
+        shell: bash
+        run: rokit init
 
       - name: trust lune
         shell: bash
