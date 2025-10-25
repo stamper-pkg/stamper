@@ -1,10 +1,7 @@
 -- help utils
 -- written by primiti-ve on github
 
-local fs = require("@lune/fs")
-local toml = require("@src/utils/toml")
-
-local configuration = toml.read(fs.readFile("./src/configuration.toml"))
+local configuration = require("@src/configuration")
 
 local commandConstructor = require("@src/constructors/cli/command")
 local tableUtils = require("@src/utils/table")
