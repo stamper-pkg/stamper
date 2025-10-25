@@ -51,17 +51,12 @@ jobs:
         id: read_luau_version
         shell: bash
         run: |
-          version=$(lua - <<'LUA'
-          local cfg = dofile("src/configuration.luau")
-          local v = cfg.currentVersion
-          print(string.format("%s.%s.%s", v.major, v.minor, v.patch))
-          LUA
-          )
-          echo "value=$version" >> $GITHUB_OUTPUT
+          version=$(lune run .lune/getVersion.luau)
+          echo "version=$version" >> $GITHUB_OUTPUT
 
       - name: create release
         uses: softprops/action-gh-release@v1
         with:
-          name: ${{ steps.read_luau_version.outputs.value }}
-          tag_name: ${{ steps.read_luau_version.outputs.value }}
+          name: ${{ steps.read_luau_version.outputs.version }}
+          tag_name: ${{ steps.read_luau_version.outputs.version }}
           draft: true
