@@ -59,4 +59,6 @@ jobs:
         with:
           name: ${{ steps.read_luau_version.outputs.version }}
           tag_name: ${{ steps.read_luau_version.outputs.version }}
+          files: |
+            releases/**
           draft: true

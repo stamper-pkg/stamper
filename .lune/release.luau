@@ -13,4 +13,4 @@ fs.writeDir("releases")
 build("Windows", "x86_64")
 build("Windows", "aarch64")
 
---fs.removeDir("build")
+fs.removeDir("build")
