@@ -30,10 +30,18 @@ jobs:
       - name: trust lune
         shell: bash
         run: rokit trust lune-org/lune
+      
+      - name: trust darklua
+        shell: bash
+        run: rokit trust seaofvoices/darklua
 
       - name: install lune
         shell: bash
         run: rokit add lune-org/lune
+      
+      - name: install darklua
+        shell: bash
+        run: rokit add seaofvoices/darklua
 
       - name: run release script
         shell: bash
