@@ -9,6 +9,7 @@ local commandConstructor = require("@src/constructors/cli/command")
 local flagConstructor = require("@src/constructors/cli/flag")
 
 local helpUtils = require("@src/utils/stamper/help")
+local miscUtils = require("@src/utils/misc")
 
 local dependencyTargets = {
 	"stamper",
@@ -137,26 +138,8 @@ local command = commandConstructor({
 				name,
 				dependencyVersion
 			)
-
-			local before, depsSection, after = file:match("^(.-)%[package%.dependencies%]%s*(.-)\n%[.-%]\n(.*)$")
-
-			if not before then
-				before, depsSection = file:match("^(.-)%[package%.dependencies%]%s*(.*)$")
-				after = ""
-			end
-
-			depsSection = depsSection:gsub("^%s+", ""):gsub("%s+$", "")
-
-			local newDepsSection
-
-			if depsSection == "" then
-				newDepsSection = dependencyData
-			else
-				newDepsSection = depsSection .. "\n" .. dependencyData
-			end
-
-			file = string.format("%s[package.dependencies]\n%s\n\n%s", before, newDepsSection, after)
-			file = string.gsub(file, "\n\n\n+", "\n\n")
+			
+			file = miscUtils.append(file, "[package.dependencies]", dependencyData)
 		end
 
 		fs.writeFile("./stamper.toml", file)

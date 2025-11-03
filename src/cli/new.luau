@@ -5,6 +5,7 @@ local fs = require("@lune/fs")
 local stdio = require("@lune/stdio")
 
 local configuration = require("@src/configuration")
+
 local stamper_toml = require("@src/templates/stamper_toml")
 
 local promptConstructor = require("@src/constructors/prompt")
@@ -124,7 +125,7 @@ local command = commandConstructor({
 				return true, nil
 			end
 		)
-
+		
 		local newProject = stamper_toml
 
 		newProject = string.gsub(newProject, "{package_name}", name)

@@ -1,12 +1,14 @@
-# dev stuff
+# dev
 selene.toml
 rokit.toml
+.vscode
 
 # stamper-related
 stamper.toml
+stamper.lock
 stamper_packages
 
-# github releases stuff
+# github releases
 releases
 build
 

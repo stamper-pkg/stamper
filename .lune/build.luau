@@ -8,6 +8,9 @@ export type os = "Windows" | "MacOS" | "Linux"
 export type arch = "x86_64" | "aarch64"
 
 return function(os: os, arch: arch)
+	os = os
+	arch = arch
+
 	local exeName = `stamper_{os:lower()}_{arch:lower()}.exe`
 	local exePath = `releases/{exeName}`
 	local zipPath = `releases/stamper_{os:lower()}_{arch:lower()}.zip`
@@ -21,16 +24,20 @@ return function(os: os, arch: arch)
 	})
 
 	if fs.isFile(exePath) then
-		print(`zipping {exeName} into {zipPath}...`)
+		print(`[info] zipping {exeName} into {zipPath}...`)
 
-		process.exec("zip", { "-j", zipPath, exePath }, {
+		local zipped = process.exec("zip", { "-j", zipPath, exePath }, {
 			stdio = "inherit",
 		})
 
-		print(`created {zipPath}`)
+		if zipped.ok then
+			print(`[success] created {zipPath}`)
 
-		fs.removeFile(exePath)
+			fs.removeFile(exePath)
+		else
+			print(`[error] error while zipping: {zipped.stderr}`)
+		end
 	else
-		error(`build failed: {exePath} not found`)
+		print(`[error] build failed: {exePath} not found`)
 	end
 end

@@ -4,4 +4,4 @@
 local configuration = require("@src/configuration")
 local currentVersion = configuration.currentVersion
 
-print(`{currentVersion.major}.{currentVersion.minor}.{currentVersion.patch}`)
+print(`{currentVersion.full}`)

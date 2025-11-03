@@ -27,7 +27,7 @@ local command = commandConstructor({
 		elseif table.find(flags, "version") then
 			local currentVersion = configuration.currentVersion
 
-			print(`stamper {currentVersion.major}.{currentVersion.minor}.{currentVersion.patch}`)
+			print(`stamper {currentVersion.full}`)
 		end
 	end,
 })

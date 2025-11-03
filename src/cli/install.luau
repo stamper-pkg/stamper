@@ -14,6 +14,7 @@ local helpUtils = require("@src/utils/stamper/help")
 local installingUtils = require("@src/utils/stamper/installing")
 local networkingUtils = require("@src/utils/stamper/networking")
 local packageUtils = require("@src/utils/stamper/package")
+
 local tableUtils = require("@src/utils/table")
 
 local _flags = {
@@ -114,6 +115,8 @@ local command = commandConstructor({
 					dependencyData = {
 						alias = alias,
 						name = dependency.name,
+						owner = dependency.owner,
+						version = dependency.version,
 
 						content = dependencyResult,
 						target = `stamper`,

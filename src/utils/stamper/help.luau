@@ -9,7 +9,7 @@ local tableUtils = require("@src/utils/table")
 function displayGeneral()
 	local currentVersion = configuration.currentVersion
 
-	print(`stamper {currentVersion.major}.{currentVersion.minor}.{currentVersion.patch}`)
+	print(`stamper {currentVersion.full}`)
 	print(`help menu`)
 
 	print(``)

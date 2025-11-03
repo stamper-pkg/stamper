@@ -37,6 +37,8 @@ export type packageData = {
 export type installData = {
 	alias: string,
 	name: string,
+	owner: string,
+	version: string,
 
 	content: string,
 	target: string,
