@@ -38,10 +38,8 @@ function throwError(response: net.FetchResponse)
 		errorMessage = string.gsub(errorMessage, "{status_code}", tostring(statusCode))
 		errorMessage = string.gsub(errorMessage, "{response_body}", string.lower(body.error))
 	end
-
-	stdio.write(stdio.color("red"))
-	print(`[stamper] request failed: {errorMessage}`)
-	stdio.write(stdio.color("reset"))
+	
+	print(`{stdio.color("red")}[stamper]{stdio.color("reset")} request failed: {errorMessage}`)
 end
 
 function get(data: types.packageData)

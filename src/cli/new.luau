@@ -46,9 +46,7 @@ local command = commandConstructor({
 		end
 
 		if fs.isFile(`./stamper.toml`) then
-			stdio.write(stdio.color("red"))
-			print(`[stamper] stamper.toml file already exists!`)
-			stdio.write(stdio.color("reset"))
+			print(`{stdio.color("red")}[stamper]{stdio.color("reset")} stamper.toml file already exists!`)
 
 			return
 		end

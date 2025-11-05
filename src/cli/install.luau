@@ -40,12 +40,8 @@ local command = commandConstructor({
 		end
 
 		if not fs.isFile(`./stamper.toml`) then
-			stdio.write(stdio.color("red"))
-
-			print(`[stamper] stamper.toml file does not exist!`)
+			print(`{stdio.color("red")}[stamper]{stdio.color("reset")} stamper.toml file does not exist!`)
 			print(`          create one with "stamper new".`)
-
-			stdio.write(stdio.color("reset"))
 
 			return
 		end
@@ -80,12 +76,8 @@ local command = commandConstructor({
 		packageUtils.getPackageDirectory()
 
 		if tableUtils.getTableLength(dependencies) <= 0 then
-			stdio.write(stdio.color("red"))
-
-			print(`[stamper] no dependencies to install!`)
+			print(`{stdio.color("red")}[stamper]{stdio.color("reset")} no dependencies to install!`)
 			print(`          add some with "stamper add".`)
-
-			stdio.write(stdio.color("reset"))
 
 			return
 		end

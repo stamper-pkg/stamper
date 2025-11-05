@@ -37,12 +37,8 @@ local command = commandConstructor({
 		end
 
 		if not fs.isFile(`./stamper.toml`) then
-			stdio.write(stdio.color("red"))
-
-			print(`[stamper] stamper.toml file does not exist`)
+			print(`{stdio.color("red")}[stamper]{stdio.color("reset")} stamper.toml file does not exist`)
 			print(`          please create one with "stamper new"`)
-
-			stdio.write(stdio.color("reset"))
 
 			return
 		end
@@ -57,9 +53,7 @@ local command = commandConstructor({
 		local sectionStart = string.find(file, sectionPattern)
 
 		if not sectionStart then
-			stdio.write(stdio.color("red"))
-			print(`[stamper] stamper.toml does not have a [package.dependencies] section!`)
-			stdio.write(stdio.color("reset"))
+			print(`{stdio.color("red")}[stamper]{stdio.color("reset")} stamper.toml does not have a [package.dependencies] section!`)
 
 			return
 		end

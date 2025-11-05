@@ -36,12 +36,8 @@ local command = commandConstructor({
 		end
 
 		if not fs.isFile(`./stamper.toml`) then
-			stdio.write(stdio.color("red"))
-
-			print(`[stamper] stamper.toml file does not exist!`)
+			print(`{stdio.color("red")}[stamper]{stdio.color("reset")} stamper.toml file does not exist!`)
 			print(`          create one with "stamper new".`)
-
-			stdio.write(stdio.color("reset"))
 
 			return
 		end
@@ -54,12 +50,8 @@ local command = commandConstructor({
 		local data = toml.read(file) :: types.packageData
 
 		if not data.package.public then
-			stdio.write(stdio.color("red"))
-
-			print(`[stamper] package is set to private!`)
+			print(`{stdio.color("red")}[stamper]{stdio.color("reset")} package is set to private!`)
 			print(`          set "public" to true before running this again.`)
-
-			stdio.write(stdio.color("reset"))
 
 			return
 		end

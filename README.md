@@ -1,14 +1,19 @@
 ![stamper](/assets/images/stamper.png)
 a simple package manager made for luau, in luau
-    
-rokit support is currently broken! please use the releases provided
 
 ## installation
-1. if you don't have lune installed, install it!!!
+### via rokit
+1. install [rokit](https://github.com/rojo-rbx/rokit) and [lune](https://lune-org.github.io/docs/getting-started/1-installation/) if you haven't already!
+2. create a new rokit project if you haven't already
+3. run `rokit add stamper-pkg/stamper` (and trust it if you haven't already!)
+4. run `rokit install` in the terminal
+5. run `stamper --help` in the terminal and enjoy!
+
+### via releases
+1. install [lune](https://lune-org.github.io/docs/getting-started/1-installation/) if you haven't already!
 2. download the .zip for your os/architecture
-3. add the executable to your PATH (i'll make a script to do it soon:tm:)
-4. run `stamper --help` in a terminal
-5. "enjoy" your stamper experience
+3. add the executable to your PATH
+4. run `stamper --help` in a terminal and enjoy!
 
 ## contribution
 - make a pr request! i'll probably accept it

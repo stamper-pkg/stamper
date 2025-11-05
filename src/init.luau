@@ -36,12 +36,8 @@ if not command then
 			local correctedCommand = commandNames[1]
 
 			if correctedCommand.distance <= 2 then
-				stdio.write(stdio.color("red"))
-
-				print(`[stamper] no command named {commandName} found!`)
-				print(`          did you mean {correctedCommand.name}?`)
-
-				stdio.write(stdio.color("reset"))
+				print(`{stdio.color("red")}[stamper]{stdio.color("reset")} no command named {stdio.color("yellow")}{commandName}{stdio.color("reset")} found!`)
+				print(`          did you mean {stdio.color("yellow")}{correctedCommand.name}{stdio.color("reset")}?`)
 
 				return
 			end
@@ -54,7 +50,5 @@ end
 if command then
 	command.execute(args)
 else
-	stdio.write(stdio.color("red"))
-	print(`[stamper] no command supplied!`)
-	stdio.write(stdio.color("reset"))
+	print(`{stdio.color("red")}[stamper]{stdio.color("reset")} no command supplied!`)
 end
